@@ -1,9 +1,13 @@
-#!/bin/ssh
+#!/bin/sh
 
 ssh jenkins@142.93.98.179 <<EOF
-  cd ~/hello-jenkins
+  cd "/hosted/hello-jenkins"
   git pull
   npm install --production
-  mp2 restart all
+  if [ "$(pm2 id hello-jenkins) "= "[]" ]; then
+    pm2 start index.js --name "hello-jenkins"
+  else
+    pm2 reload hello-jenkins
+  fi
   exit
 EOF
